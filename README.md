@@ -5,7 +5,7 @@ on search results page. Verify that title contains searched word
 expected domain (“testautomationday.com”) on search results
 pages (page: 1-5).
 
-Requirements
+Requirements:
 Java JDK 8.
 
 Steps to run:
