@@ -9,6 +9,18 @@ Requirements:
 Java JDK 8.
 
 Steps to run:
-mvn clean test - run tests
-mvn allure:serve -generate allure report, folterto save report: "target/allure-results", it can be changed in allure.properties
-mvn allure:report - start web server with results
+  run tests
+
+```sh
+mvn clean test
+```
+generate allure report, folterto save report: "target/allure-results", it can be changed in allure.properties
+  
+```sh
+mvn allure:serve
+```
+start web server with results
+  
+```sh
+mvn allure:report
+```
