@@ -2,7 +2,6 @@ package steps;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Then;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pages.BasicPage;
@@ -13,8 +12,8 @@ import java.util.List;
 import static com.codeborne.selenide.Selenide.open;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.testng.Assert.fail;
 
-@Slf4j
 public class Hooks {
     BasicPage basicPage = new BasicPage();
     final static Logger logger = LoggerFactory.getLogger(Hooks.class);
@@ -22,7 +21,7 @@ public class Hooks {
     @Before
     public void openUrl() {
         open("https://google.com");
-        logger.info("Starting browser2");
+        logger.info("Starting browser");
     }
 
     @Then("Input text {string}")
@@ -41,9 +40,13 @@ public class Hooks {
     }
 
     @Then("Verify that there is {string} domain is present on sears results pages, page 1 - {int}")
-// (page: from 1 to {string})")
-    public void verifyDomainNameInResalts(String expectedDomain, int pageToCheck) { //, String pageToCheck) {
+    public void verifyDomainNameInResalts(String expectedDomain, int pageToCheck) {
         List<String> domains = new ArrayList();
+
+        if (!basicPage.isSearchSuccessful()) {
+            fail("There is no search result, can`t check domains name");
+        }
+
         for (int i = 0; i < pageToCheck; i++) {
             List<String> urls = basicPage.getSearchingResults();
             domains.addAll(basicPage.getDomainNameFromUrl(urls));
@@ -55,6 +58,5 @@ public class Hooks {
         }
         assertThat("Title open page by key word " + expectedDomain + " not contain it in title", domains, hasItems(expectedDomain));
     }
-
 
 }

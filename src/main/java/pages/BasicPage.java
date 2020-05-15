@@ -16,15 +16,14 @@ import static utils.Utils.getDomainName;
 
 public class BasicPage {
     private String searchFieldLoc = "//input[@name='q']";
-    private String submitButtonLoc = "//input[@name='btnK']";
     private String getSearchResults = ".g h3";
     private String searchResultsDomainLoc = ".r > a:first-child";
     private String nexButtonLoc = "#pnnext";
 
     public void inputText(String text) {
         $x(searchFieldLoc).shouldHave(visible).clear();
-        $x(searchFieldLoc).shouldHave(visible).setValue(text);
-        $x(submitButtonLoc).shouldHave(visible).click();
+        $x(searchFieldLoc).shouldHave(visible).setValue(text)
+                .pressEnter();
     }
 
     public void openLinkByIndex(int index) {
@@ -41,6 +40,11 @@ public class BasicPage {
             domains.add(getDomainName(url));
         }
         return domains;
+    }
+
+    public boolean isSearchSuccessful() {
+        // if there is no search results page will be empty
+        return !$x("//div[@id='res']//p[@role='heading']/em").exists();
     }
 
     public List<String> getSearchingResults() {
