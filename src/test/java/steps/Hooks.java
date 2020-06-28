@@ -31,7 +31,7 @@ public class Hooks {
     @Then("Open link by index {string}")
     public void openLinByIndex(String index) {
         resultsPage.openLinkByIndex(Integer.valueOf(index));
-        logger.info("Open result lonk by index" + index);
+        logger.info("Open result link by index " + index);
     }
 
     @Then("Check that page title contain text {string}")
