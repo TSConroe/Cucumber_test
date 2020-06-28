@@ -1,62 +1,60 @@
 package steps;
 
-import io.cucumber.java.Before;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pages.BasicPage;
+import pages.MainPage;
+import pages.ResultsPage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.codeborne.selenide.Selenide.open;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.testng.Assert.fail;
 
 public class Hooks {
-    BasicPage basicPage = new BasicPage();
+    ResultsPage resultsPage = new ResultsPage();
+    MainPage mainPage = new MainPage();
     final static Logger logger = LoggerFactory.getLogger(Hooks.class);
 
-    @Before
-    public void openUrl() {
-        open("https://google.com");
-        logger.info("Starting browser");
+    @Given("Open {string}")
+    public void openUrl(String domainName) {
+        open("https://" + domainName);
+        logger.info("Open url: https://" + domainName);
     }
 
     @Then("Input text {string}")
     public void input_text(String string) {
-        basicPage.inputText(string);
+        mainPage.inputText(string);
     }
 
     @Then("Open link by index {string}")
     public void openLinByIndex(String index) {
-        basicPage.openLinkByIndex(Integer.valueOf(index));
+        resultsPage.openLinkByIndex(Integer.valueOf(index));
+        logger.info("Open result lonk by index" + index);
     }
 
     @Then("Check that page title contain text {string}")
     public void checkPageTitle(String expectedTitle) {
-        basicPage.checkPageTitle(expectedTitle);
+        resultsPage.checkPageTitle(expectedTitle);
     }
 
     @Then("Verify that there is {string} domain is present on sears results pages, page 1 - {int}")
     public void verifyDomainNameInResalts(String expectedDomain, int pageToCheck) {
-        List<String> domains = new ArrayList();
-
-        if (!basicPage.isSearchSuccessful()) {
+        if (!resultsPage.isSearchSuccessful()) {
             fail("There is no search result, can`t check domains name");
         }
 
-        for (int i = 0; i < pageToCheck; i++) {
-            List<String> urls = basicPage.getSearchingResults();
-            domains.addAll(basicPage.getDomainNameFromUrl(urls));
-            if (domains.contains(expectedDomain)) {
+        for (int i = 1; i <= pageToCheck; i++) {
+            List<String> urls = resultsPage.getSearchingResults();
+            if (resultsPage.getDomainNameFromUrl(urls).contains(expectedDomain)) {
                 break;
+            } else if (i != pageToCheck) {
+                resultsPage.clickNextPage();
             } else {
-                basicPage.clickNextPage();
+                fail("Expected domain name '" + expectedDomain + " was not present in search result on pages 1-" + pageToCheck);
             }
         }
-        assertThat("Title open page by key word " + expectedDomain + " not contain it in title", domains, hasItems(expectedDomain));
     }
 
 }
