@@ -17,10 +17,10 @@ mvn clean test
 generate allure report, folterto save report: "target/allure-results", it can be changed in allure.properties
   
 ```sh
-mvn allure:serve
+mvn allure:report
 ```
 start web server with results
   
 ```sh
-mvn allure:report
+mvn allure:serve
 ```
